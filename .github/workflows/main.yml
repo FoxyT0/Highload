@@ -36,4 +36,3 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
           token: 94f4aaac-cd56-43d3-856f-e52442467054
-Footer
