@@ -13,7 +13,7 @@ public class StartMoveCommand : ICommand
 
     public void Execute()
     {
-        IoC.Resolve<ICommand>("Game.UObject.SetProperty", "velocity", target.uobj, target.velocity);
+        IoC.Resolve<ICommand>("Game.UObject.SetProperty", "velocity", target.uobj, target.velocity).Execute();
 
         IMovable mo = IoC.Resolve<IMovable>("Game.Adapters.IMovable", target.uobj);
 
