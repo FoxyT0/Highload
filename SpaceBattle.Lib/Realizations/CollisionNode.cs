@@ -22,3 +22,4 @@ public class CollisionNode<T> : INode<T> where T : Vector
         return (right.decision(args));
     }
 }
+

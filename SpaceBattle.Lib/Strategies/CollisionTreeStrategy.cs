@@ -15,3 +15,4 @@ public class CollisionCheckStrategy : IStrategy
         return tree.decision(l);
     }
 }
+

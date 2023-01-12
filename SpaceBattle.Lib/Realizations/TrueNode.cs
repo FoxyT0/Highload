@@ -7,3 +7,4 @@ public class TrueNode<T> : INode<T>
         return true;
     }
 }
+

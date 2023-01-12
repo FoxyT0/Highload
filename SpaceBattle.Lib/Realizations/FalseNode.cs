@@ -7,3 +7,4 @@ public class FalseNode<T> : INode<T>
         return false;
     }
 }
+
