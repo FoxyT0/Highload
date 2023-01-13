@@ -145,5 +145,9 @@ public class Vector
     {
         return String.Join("", coordinates.Select(x => x.ToString())).GetHashCode();
     }
+    public int[] getCoords()
+    {
+        return coordinates;
+    }
 }
 
