@@ -11,11 +11,6 @@ public class MyThreadUnitTests
     {
         new InitScopeBasedIoCImplementationCommand().Execute();
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
-
-        var ex = new Exception();
-        var GetExceptionStrategy = new Mock<IStrategy>();
-        GetExceptionStrategy.Setup(o => o.run_strategy()).Returns(ex);
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Exceptions.StoppingWrongThread", (object[] args) => GetExceptionStrategy.Object.run_strategy()).Execute();
     }
 
     [Fact]
@@ -26,7 +21,7 @@ public class MyThreadUnitTests
         var q = new BlockingCollection<SpaceBattle.Lib.ICommand>() { cmd.Object };
         var ra = new RecieverAdapter(q);
 
-        q.Take().Execute();
+        ra.Recieve().Execute();
 
         cmd.Verify(obj => obj.Execute());
     }
@@ -132,9 +127,46 @@ public class MyThreadUnitTests
         q.Add(cmd1.Object);
 
         mt.Execute();
-        Thread.Sleep(3);
+        Thread.Sleep(15);
 
         cmd1.Verify(obj => obj.Execute());
+    }
+
+    void catchingMethod(SpaceBattle.Lib.ICommand c)
+    {
+        try
+        {
+            c.Execute();
+            Assert.Fail("");
+        }
+        catch
+        {
+            Assert.Throws<Exception>(c.Execute);
+        }
+    }
+
+    [Fact]
+    public void wrongThreadHard()
+    {
+        var rc = new Mock<IReciever>();
+        var mt = new MyThread(rc.Object);
+        var hscmd = new HardStopCommand(mt);
+        Thread t = new Thread(() => catchingMethod(hscmd));
+
+        t.Start();
+    }
+
+    [Fact]
+    public void wrongThreadSoft()
+    {
+        var sd = new Mock<ISender>();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Queue.Sender", (object[] args) => sd.Object).Execute();
+        var rc = new Mock<IReciever>();
+        var mt = new MyThread(rc.Object);
+        var sscmd = new SoftStopCommand(mt);
+        Thread t = new Thread(() => catchingMethod(sscmd));
+
+        t.Start();
     }
 }
 

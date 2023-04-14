@@ -21,7 +21,7 @@ public class SoftStopCommand : ICommand
         }
         else
         {
-            throw IoC.Resolve<Exception>("Game.Exceptions.StoppingWrongThread");
+            throw new Exception();
         }
     }
 }
