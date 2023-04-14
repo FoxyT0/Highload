@@ -3,7 +3,7 @@ namespace SpaceBattle.Lib;
 using System.Threading;
 using Hwdtech;
 
-class SoftStopCommand : ICommand
+public class SoftStopCommand : ICommand
 {
     MyThread thread;
     ISender sender;
@@ -16,7 +16,8 @@ class SoftStopCommand : ICommand
     {
         if (Thread.CurrentThread == thread.thread)
         {
-            sender.Send(IoC.Resolve<ICommand>("Game.Commands.HardStopCommand"));
+            var hscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.HardStop", thread);
+            sender.Send(hscmd);
         }
         else
         {
