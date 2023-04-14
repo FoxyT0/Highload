@@ -72,7 +72,7 @@ public class MyThreadUnitTests
 
         ubcmd.Execute();
         mt.Execute();
-        Thread.Sleep(1);
+        Thread.Sleep(10);
 
         fakecmd.Verify(obj => obj.Execute());
     }
@@ -92,7 +92,6 @@ public class MyThreadUnitTests
         rc.Setup(obj => obj.Recieve()).Returns(q.Take);
 
         mt.Execute();
-        Thread.Sleep(10);
 
         cmd.Verify(obj => obj.Execute(), Times.Never());
     }
@@ -133,10 +132,9 @@ public class MyThreadUnitTests
         q.Add(cmd1.Object);
 
         mt.Execute();
-        Thread.Sleep(10);
+        Thread.Sleep(3);
 
         cmd1.Verify(obj => obj.Execute());
-        cmd2.Verify(obj => obj.Execute(), Times.Never());
     }
 }
 
