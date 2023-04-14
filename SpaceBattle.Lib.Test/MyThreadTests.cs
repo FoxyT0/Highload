@@ -10,8 +10,6 @@ public class MyThreadUnitTests
     public MyThreadUnitTests()
     {
         new InitScopeBasedIoCImplementationCommand().Execute();
-        var hs = new GetHardStopCommandStrategy();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Commands.HardStop", (object[] args) => hs.run_strategy(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
 
         var ex = new Exception();
@@ -94,7 +92,7 @@ public class MyThreadUnitTests
         rc.Setup(obj => obj.Recieve()).Returns(q.Take);
 
         mt.Execute();
-        Thread.Sleep(3);
+        Thread.Sleep(10);
 
         cmd.Verify(obj => obj.Execute(), Times.Never());
     }
@@ -117,15 +115,6 @@ public class MyThreadUnitTests
         }
     }
 
-    class GetHardStopCommandStrategy : IStrategy
-    {
-        public object run_strategy(params object[] args)
-        {
-            var hsc = new HardStopCommand((MyThread)args[0]);
-            return hsc;
-        }
-    }
-
     [Fact]
     public void SoftStopCommandTest()
     {
@@ -144,7 +133,7 @@ public class MyThreadUnitTests
         q.Add(cmd1.Object);
 
         mt.Execute();
-        Thread.Sleep(3);
+        Thread.Sleep(10);
 
         cmd1.Verify(obj => obj.Execute());
         cmd2.Verify(obj => obj.Execute(), Times.Never());

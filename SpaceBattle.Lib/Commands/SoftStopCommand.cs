@@ -16,7 +16,7 @@ public class SoftStopCommand : ICommand
     {
         if (Thread.CurrentThread == thread.thread)
         {
-            var hscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.HardStop", thread);
+            var hscmd = new HardStopCommand(thread);
             sender.Send(hscmd);
         }
         else
