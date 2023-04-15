@@ -7,10 +7,12 @@ using Moq;
 
 public class MyThreadUnitTests
 {
+    object ic;
     public MyThreadUnitTests()
     {
         new InitScopeBasedIoCImplementationCommand().Execute();
-        IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
+        ic = IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"));
+        IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", ic).Execute();
     }
 
     [Fact]
@@ -40,35 +42,37 @@ public class MyThreadUnitTests
     [Fact]
     public void PositiveMakeThreadsTest()
     {
+        var waiter = new AutoResetEvent(false);
         var cmd = new Mock<SpaceBattle.Lib.ICommand>();
-        cmd.Setup(obj => obj.Execute()).Verifiable();
+        cmd.Setup(obj => obj.Execute()).Callback(() => waiter.Set()).Verifiable();
         var rc = new Mock<IReciever>();
         rc.Setup(obj => obj.Recieve()).Returns(cmd.Object);
         var mt = new MyThread(rc.Object);
 
         mt.Execute();
-        Thread.Sleep(10);
 
+        waiter.WaitOne();
         cmd.Verify(obj => obj.Execute());
     }
 
     [Fact]
     public void UpdateBehaviorTest()
     {
+        var waiter = new AutoResetEvent(false);
         var cmd = new Mock<SpaceBattle.Lib.ICommand>();
         cmd.Setup(obj => obj.Execute());
         var rc = new Mock<IReciever>();
         rc.Setup(obj => obj.Recieve()).Returns(cmd.Object);
         var fakecmd = new Mock<SpaceBattle.Lib.ICommand>();
-        fakecmd.Setup(obj => obj.Execute()).Verifiable();
+        fakecmd.Setup(obj => obj.Execute()).Callback(() => waiter.Set()).Verifiable();
         var newbhvr = new Action(() => fakecmd.Object.Execute());
         var mt = new MyThread(rc.Object);
         var ubcmd = new UpdateBehaviorCommand(mt, newbhvr);
 
         ubcmd.Execute();
         mt.Execute();
-        Thread.Sleep(10);
 
+        waiter.WaitOne();
         fakecmd.Verify(obj => obj.Execute());
     }
 
@@ -109,6 +113,14 @@ public class MyThreadUnitTests
         }
     }
 
+    class GetHardStop : IStrategy
+    {
+        public object run_strategy(params object[] args)
+        {
+            return new HardStopCommand((MyThread)args[0]);
+        }
+    }
+
     [Fact]
     public void SoftStopCommandTest()
     {
@@ -123,12 +135,25 @@ public class MyThreadUnitTests
         var sscmd = new SoftStopCommand(mt);
         cmd1.Setup(obj => obj.Execute()).Callback(() => q.Add(cmd2.Object)).Verifiable();
         rc.Setup(obj => obj.Recieve()).Returns(q.Take);
+        var rg = new Mock<SpaceBattle.Lib.ICommand>();
+        var hscmd = new GetHardStop();
+        rg.Setup(obj => obj.Execute()).Callback(() =>
+        {
+            new InitScopeBasedIoCImplementationCommand().Execute();
+            IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", ic).Execute();
+            IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Commands.HardStop", (object[] args) => hscmd.run_strategy(args)).Execute();
+        });
+        var waiter = new AutoResetEvent(false);
+        var smfr = new Mock<SpaceBattle.Lib.ICommand>();
+        smfr.Setup(obj => obj.Execute()).Callback(() => waiter.Set());
+        q.Add(rg.Object);
         q.Add(sscmd);
         q.Add(cmd1.Object);
+        q.Add(smfr.Object);
 
         mt.Execute();
-        Thread.Sleep(15);
 
+        waiter.WaitOne();
         cmd1.Verify(obj => obj.Execute());
     }
 
