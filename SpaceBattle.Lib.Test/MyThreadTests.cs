@@ -219,5 +219,11 @@ public class MyThreadUnitTests
 
         waiter.WaitOne();
     }
+
+    [Fact]
+    public void HardStopExceptionTests()
+    {
+        var nt2 = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "2");
+    }
 }
 

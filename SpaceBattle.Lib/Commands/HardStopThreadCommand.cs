@@ -1,7 +1,6 @@
 namespace SpaceBattle.Lib;
 
 using Hwdtech;
-using System.Threading;
 
 public class HardStopThreadCommand : SpaceBattle.Lib.ICommand
 {
@@ -20,15 +19,8 @@ public class HardStopThreadCommand : SpaceBattle.Lib.ICommand
         sd.Send(
             IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Adapters.CommandAdapter", () =>
               {
-                  if (Thread.CurrentThread == mt.thread)
-                  {
-                      act();
-                      mt.Stop();
-                  }
-                  else
-                  {
-                      throw IoC.Resolve<Exception>("Game.Exceptions.WrongThread");
-                  }
+                  act();
+                  mt.Stop();
               }));
     }
 }
