@@ -65,7 +65,7 @@ public class MyThreadUnitTests
         public object run_strategy(params object[] args)
         {
             string id = (string)args[0];
-            return IoC.Resolve<Dictionary<string, SomeCol>>("Game.Threads.AllThreads")[id].tr;
+            return IoC.Resolve<Dictionary<string, SomeCol>>("Game.Threads.AllThreads")[id].tr!;
         }
     }
 
@@ -74,7 +74,7 @@ public class MyThreadUnitTests
         public object run_strategy(params object[] args)
         {
             string id = (string)args[0];
-            return IoC.Resolve<Dictionary<string, SomeCol>>("Game.Threads.AllThreads")[id].rc;
+            return IoC.Resolve<Dictionary<string, SomeCol>>("Game.Threads.AllThreads")[id].rc!;
         }
     }
 
@@ -83,7 +83,7 @@ public class MyThreadUnitTests
         public object run_strategy(params object[] args)
         {
             string id = (string)args[0];
-            return IoC.Resolve<Dictionary<string, SomeCol>>("Game.Threads.AllThreads")[id].sd;
+            return IoC.Resolve<Dictionary<string, SomeCol>>("Game.Threads.AllThreads")[id].sd!;
         }
     }
 
