@@ -19,23 +19,24 @@ public class SoftStopThreadCommand : SpaceBattle.Lib.ICommand
         var fakeq = new BlockingCollection<SpaceBattle.Lib.ICommand>();
         var sd = IoC.Resolve<ISender>("Game.Threads.GetSender", id);
         var rc = IoC.Resolve<IReciever>("Game.Threads.GetReciever", id);
-        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Threads.SetSender", id, fakeq).Execute();
         Action a = () =>
         {
-            if (rc.isEmpty())
+            if (Thread.CurrentThread == mt.thread)
             {
-                if (Thread.CurrentThread == mt.thread)
+                if (rc.isEmpty())
                 {
-                    act();
                     mt.Stop();
                 }
                 else
                 {
                     throw IoC.Resolve<Exception>("Game.Exceptions.WrongThread");
+
                 }
             }
         };
         sd.Send(new UpdateBehaviorCommand(mt, a));
+        sd.Send(IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Adapters.CommandAdapter", act));
+        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Threads.SetSender", id, fakeq).Execute();
     }
 }
 

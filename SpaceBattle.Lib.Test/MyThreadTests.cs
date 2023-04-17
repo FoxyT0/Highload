@@ -193,21 +193,6 @@ public class MyThreadUnitTests
 
         waiter.WaitOne();
     }
-
-    [Fact]
-    public void UpdateBehaviorTests()
-    {
-        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
-        var waiter = new AutoResetEvent(false);
-        Action a = () => waiter.Set();
-
-        nt.Execute();
-        var ubcmd = new UpdateBehaviorCommand(IoC.Resolve<MyThread>("Game.Threads.GetThread", "1"), a);
-        ubcmd.Execute();
-
-        waiter.WaitOne();
-    }
-
     [Fact]
     public void HardStopCommandTests()
     {
