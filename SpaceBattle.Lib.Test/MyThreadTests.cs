@@ -109,7 +109,7 @@ public class MyThreadUnitTests
         }
     }
 
-    public class RegistrationCommand : ICommand
+    public class RegistrationCommand : SpaceBattle.Lib.ICommand
     {
         public void Execute()
         {
@@ -120,7 +120,7 @@ public class MyThreadUnitTests
             var hscmd = new HardStopThreadStrategy();
             IoC.Resolve<ICommand>("IoC.Register", "Game.Commands.HardStop", (object[] args) => hscmd.run_strategy(args)).Execute();
 
-            var sscmd = new HardStopThreadStrategy();
+            var sscmd = new SoftStopThreadStrategy();
             IoC.Resolve<ICommand>("IoC.Register", "Game.Commands.SoftStop", (object[] args) => sscmd.run_strategy(args)).Execute();
 
             var casts = new CreateAndStartThreadStrategy();
@@ -214,6 +214,7 @@ public class MyThreadUnitTests
         var sscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SoftStop", "1", () => { waiter.Set(); });
 
         nt.Execute();
+        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", new RegistrationCommand()).Execute();
         sscmd.Execute();
 
         waiter.WaitOne();

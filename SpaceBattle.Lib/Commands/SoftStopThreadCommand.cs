@@ -25,17 +25,16 @@ public class SoftStopThreadCommand : SpaceBattle.Lib.ICommand
             {
                 if (rc.isEmpty())
                 {
+                    act();
                     mt.Stop();
                 }
-                else
-                {
-                    throw IoC.Resolve<Exception>("Game.Exceptions.WrongThread");
-
-                }
+            }
+            else
+            {
+                throw IoC.Resolve<Exception>("Game.Exceptions.WrongThread");
             }
         };
         sd.Send(new UpdateBehaviorCommand(mt, a));
-        sd.Send(IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Adapters.CommandAdapter", act));
         IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Threads.SetSender", id, fakeq).Execute();
     }
 }

@@ -2,8 +2,8 @@ namespace SpaceBattle.Lib;
 
 public class UpdateBehaviorCommand : ICommand
 {
-    Action behavior;
     MyThread thread;
+    Action behavior;
 
     public UpdateBehaviorCommand(MyThread thread, Action behavior)
     {
