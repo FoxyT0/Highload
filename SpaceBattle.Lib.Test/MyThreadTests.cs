@@ -171,7 +171,7 @@ public class MyThreadUnitTests
     [Fact]
     public void CreateThreadTests()
     {
-        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1", () => { });
+        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
         var waiter = new AutoResetEvent(false);
         var smfr = new Mock<SpaceBattle.Lib.ICommand>();
         smfr.Setup(obj => obj.Execute()).Callback(() => waiter.Set()).Verifiable();
@@ -181,6 +181,30 @@ public class MyThreadUnitTests
 
         waiter.WaitOne();
         smfr.Verify();
+    }
+
+    [Fact]
+    public void CreateThreadActTests()
+    {
+        var waiter = new AutoResetEvent(false);
+        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1", () => { waiter.Set(); });
+
+        nt.Execute();
+
+        waiter.WaitOne();
+    }
+
+    [Fact]
+    public void UpdateBehaviorTests()
+    {
+        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
+        var waiter = new AutoResetEvent(false);
+
+        nt.Execute();
+        var ubcmd = new UpdateBehaviorCommand(IoC.Resolve<MyThread>("Game.Threads.GetThread", "1"), () => waiter.Set());
+        ubcmd.Execute();
+
+        waiter.WaitOne();
     }
 }
 

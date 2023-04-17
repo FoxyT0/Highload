@@ -9,7 +9,7 @@ public class CreateAndStartThreadStrategy
         string id = (string)args[0];
         SpaceBattle.Lib.ICommand castc = new CreateAndStartThreadCommand(id);
         Action act = () => { };
-        if (args[1] != null)
+        if (args.Length > 1)
         {
             act = (Action)args[1];
         }
