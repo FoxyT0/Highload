@@ -199,10 +199,37 @@ public class MyThreadUnitTests
     {
         var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
         var waiter = new AutoResetEvent(false);
+        Action a = () => waiter.Set();
 
         nt.Execute();
-        var ubcmd = new UpdateBehaviorCommand(IoC.Resolve<MyThread>("Game.Threads.GetThread", "1"), () => waiter.Set());
+        var ubcmd = new UpdateBehaviorCommand(IoC.Resolve<MyThread>("Game.Threads.GetThread", "1"), a);
         ubcmd.Execute();
+
+        waiter.WaitOne();
+    }
+
+    [Fact]
+    public void HardStopCommandTests()
+    {
+        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
+        var waiter = new AutoResetEvent(false);
+        var hscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.HardStop", "1", () => { waiter.Set(); });
+
+        nt.Execute();
+        hscmd.Execute();
+
+        waiter.WaitOne();
+    }
+
+    [Fact]
+    public void SoftStopCommandTests()
+    {
+        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
+        var waiter = new AutoResetEvent(false);
+        var sscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SoftStop", "1", () => { waiter.Set(); });
+
+        nt.Execute();
+        sscmd.Execute();
 
         waiter.WaitOne();
     }

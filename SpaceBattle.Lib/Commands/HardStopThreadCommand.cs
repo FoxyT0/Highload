@@ -16,19 +16,19 @@ public class HardStopThreadCommand : SpaceBattle.Lib.ICommand
     public void Execute()
     {
         var mt = IoC.Resolve<MyThread>("Game.Threads.GetThread", id);
-        if (Thread.CurrentThread == mt.thread)
-        {
-            var sd = IoC.Resolve<ISender>("Game.Threads.GetSender", id);
-            sd.Send(
-                IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Adapters.CommandAdapter", () =>
+        var sd = IoC.Resolve<ISender>("Game.Threads.GetSender", id);
+        sd.Send(
+            IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Adapters.CommandAdapter", () =>
+              {
+                  if (Thread.CurrentThread == mt.thread)
                   {
                       act();
                       mt.Stop();
-                  }));
-        }
-        else
-        {
-            throw IoC.Resolve<Exception>("Game.Exceptions.WrongThread");
-        }
+                  }
+                  else
+                  {
+                      throw IoC.Resolve<Exception>("Game.Exceptions.WrongThread");
+                  }
+              }));
     }
 }

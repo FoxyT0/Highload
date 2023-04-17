@@ -5,7 +5,7 @@ public class SoftStopThreadStrategy
     public object run_strategy(params object[] args)
     {
         string id = (string)args[0];
-        Action act = () => { };
+        var act = () => { };
         if (args.Length > 1)
         {
             act = (Action)args[1];
