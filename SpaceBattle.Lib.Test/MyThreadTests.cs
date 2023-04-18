@@ -100,20 +100,25 @@ public class MyThreadUnitTests
         }
     }
 
-    public class CommandAdapterStrategy
+    public class CommandAdapterStrategy : IStrategy
     {
         public object run_strategy(params object[] args)
         {
-            var act = (Action)args[0];
-            return new CommandAdapter(act);
+            Action act = (Action)args[0];
+            SpaceBattle.Lib.ICommand ca = new CommandAdapter(act);
+            return ca;
         }
     }
 
     public class RegistrationCommand : SpaceBattle.Lib.ICommand
     {
+        Dictionary<string, SomeCol> regt;
+        public RegistrationCommand(Dictionary<string, SomeCol> regt)
+        {
+            this.regt = regt;
+        }
         public void Execute()
         {
-            new InitScopeBasedIoCImplementationCommand().Execute();
             var ic = IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"));
             IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", ic).Execute();
 
@@ -129,9 +134,6 @@ public class MyThreadUnitTests
             var scmd = new SendCommandStrategy();
             IoC.Resolve<ICommand>("IoC.Register", "Game.Commands.SendCommand", (object[] args) => scmd.run_strategy(args)).Execute();
 
-            var regt = new Dictionary<string, SomeCol>();
-            var somecol = new SomeCol();
-            regt.Add("1", somecol);
             var st = new Mock<IStrategy>();
             st.Setup(o => o.run_strategy()).Returns(regt);
             IoC.Resolve<ICommand>("IoC.Register", "Game.Threads.AllThreads", (object[] args) => st.Object.run_strategy(args)).Execute();
@@ -163,9 +165,17 @@ public class MyThreadUnitTests
         }
     }
 
+    Dictionary<string, SomeCol> regt;
+
     public MyThreadUnitTests()
     {
-        new RegistrationCommand().Execute();
+        new InitScopeBasedIoCImplementationCommand().Execute();
+        regt = new Dictionary<string, SomeCol>();
+        var somecol = new SomeCol();
+        regt.Add("1", somecol);
+        regt.Add("2", somecol);
+
+        new RegistrationCommand(regt).Execute();
     }
 
     [Fact]
@@ -198,9 +208,10 @@ public class MyThreadUnitTests
     {
         var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
         var waiter = new AutoResetEvent(false);
-        var hscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.HardStop", "1", () => { waiter.Set(); });
 
         nt.Execute();
+        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", new RegistrationCommand(regt)).Execute();
+        var hscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.HardStop", "1", () => { waiter.Set(); });
         hscmd.Execute();
 
         waiter.WaitOne();
@@ -211,19 +222,56 @@ public class MyThreadUnitTests
     {
         var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
         var waiter = new AutoResetEvent(false);
-        var sscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SoftStop", "1", () => { waiter.Set(); });
 
         nt.Execute();
-        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", new RegistrationCommand()).Execute();
+        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", new RegistrationCommand(regt)).Execute();
+        var sscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SoftStop", "1", () => { waiter.Set(); });
         sscmd.Execute();
 
         waiter.WaitOne();
     }
 
     [Fact]
-    public void HardStopExceptionTests()
+    public void HardExceptionCommand()
     {
-        var nt2 = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "2");
+        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
+
+        nt.Execute();
+        var scmd = new HardStopThreadCommand("2");
+        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", scmd);
+
+        Assert.Throws<Exception>(scmd.Execute);
+    }
+
+    [Fact]
+    public void SoftExceptionCommand()
+    {
+        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
+
+        nt.Execute();
+        var scmd = new SoftStopThreadCommand("2", () => { });
+        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", scmd);
+
+        Assert.Throws<Exception>(scmd.Execute);
+    }
+
+    [Fact]
+    public void HardWithoutLambda()
+    {
+        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
+        nt.Execute();
+        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", new RegistrationCommand(regt)).Execute();
+        var sscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.HardStop", "1");
+        sscmd.Execute();
+    }
+    [Fact]
+    public void SoftWithoutLambda()
+    {
+        var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
+        nt.Execute();
+        IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", new RegistrationCommand(regt)).Execute();
+        var sscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SoftStop", "1");
+        sscmd.Execute();
     }
 }
 

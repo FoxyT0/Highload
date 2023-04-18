@@ -20,7 +20,9 @@ public class SoftStopThreadCommand : SpaceBattle.Lib.ICommand
         {
             var q = new BlockingCollection<SpaceBattle.Lib.ICommand>();
             var rc = IoC.Resolve<IReciever>("Game.Threads.GetReciever", id);
-            new UpdateBehaviorCommand(mt, () => { if (rc.isEmpty()) { act(); mt.Stop(); } }).Execute();
+            IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand",
+                    new UpdateBehaviorCommand(mt,
+                    () => { if (rc.isEmpty()) { act(); mt.Stop(); } })).Execute();
         }
         else
         {
