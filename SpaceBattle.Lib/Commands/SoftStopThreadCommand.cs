@@ -1,7 +1,6 @@
 namespace SpaceBattle.Lib;
 
 using Hwdtech;
-using System.Collections.Concurrent;
 
 public class SoftStopThreadCommand : SpaceBattle.Lib.ICommand
 {
@@ -17,10 +16,18 @@ public class SoftStopThreadCommand : SpaceBattle.Lib.ICommand
     {
         MyThread mt = IoC.Resolve<MyThread>("Game.Threads.GetThread", id);
         if (Thread.CurrentThread == mt.thread)
-        {
-            var q = new BlockingCollection<SpaceBattle.Lib.ICommand>();
-            var rc = IoC.Resolve<IReciever>("Game.Threads.GetReciever", id);
-            new UpdateBehaviorCommand(mt, () => { if (rc.isEmpty()) { act(); mt.Stop(); } }).Execute();
+        {            
+			var rc = IoC.Resolve<IReciever>("Game.Threads.GetReciever", id);
+            new UpdateBehaviorCommand(mt, () => 
+				{ 
+					if (rc.isEmpty())
+					{ 
+						act();
+						mt.Stop();
+					}
+					var cmd = rc.Recieve();
+					cmd.Execute();
+				}).Execute();
         }
         else
         {

@@ -231,6 +231,44 @@ public class MyThreadUnitTests
         waiter.WaitOne();
     }
 
+	[Fact]
+	public void HardStopQueueCheck()
+	{
+		var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
+		var waiter = new AutoResetEvent(false);
+		var fakecmd = new Mock<SpaceBattle.Lib.ICommand>();
+		
+		nt.Execute();
+		IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", new RegistrationCommand(regt)).Execute();
+        var hscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.HardStop", "1", () => { waiter.Set(); });
+        hscmd.Execute();
+		IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", fakecmd.Object).Execute();
+
+		waiter.WaitOne();
+		var rc = IoC.Resolve<IReciever>("Game.Threads.GetReciever", "1");
+		Assert.False(rc.isEmpty());
+	}
+
+	[Fact]
+	public void SoftStopQueueCheck()
+	{
+		var nt = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.CreateThread", "1");
+		var waiter = new AutoResetEvent(false);
+		var fakecmd = new Mock<SpaceBattle.Lib.ICommand>();
+		fakecmd.Setup(obj => obj.Execute()).Verifiable();
+
+		nt.Execute();
+		IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", new RegistrationCommand(regt)).Execute();
+        var sscmd = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SoftStop", "1", () => { waiter.Set(); });
+        sscmd.Execute();
+		IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Commands.SendCommand", "1", fakecmd.Object).Execute();
+
+		waiter.WaitOne();
+		fakecmd.Verify();
+		var rc = IoC.Resolve<IReciever>("Game.Threads.GetReciever", "1");
+		Assert.True(rc.isEmpty());
+	}
+
     [Fact]
     public void HardExceptionCommand()
     {
