@@ -22,3 +22,4 @@ public class CreateAndStartThreadStrategy
         return new MacroCommand(mcinp);
     }
 }
+

@@ -10,3 +10,4 @@ public class SendCommandStrategy : IStrategy
         return scc;
     }
 }
+

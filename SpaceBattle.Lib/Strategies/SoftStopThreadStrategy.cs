@@ -20,3 +20,4 @@ public class SoftStopThreadStrategy
         return ret;
     }
 }
+

@@ -5,3 +5,4 @@ public interface IReciever
     ICommand Recieve();
     bool isEmpty();
 }
+

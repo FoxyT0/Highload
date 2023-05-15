@@ -4,3 +4,4 @@ public interface ISender
 {
     void Send(ICommand cmd);
 }
+
