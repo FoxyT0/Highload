@@ -33,3 +33,4 @@ public class MyThread
     internal void Stop() => stop = true;
     public void Execute() => thread.Start();
 }
+

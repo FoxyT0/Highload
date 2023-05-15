@@ -19,3 +19,4 @@ public class SendCommandCommand : SpaceBattle.Lib.ICommand
         sn.Send(cmd);
     }
 }
+

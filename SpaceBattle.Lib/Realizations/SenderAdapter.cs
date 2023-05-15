@@ -13,3 +13,4 @@ public class SenderAdapter : ISender
         queue.Add(cmd);
     }
 }
+

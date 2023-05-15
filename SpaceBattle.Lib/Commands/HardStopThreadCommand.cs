@@ -23,3 +23,4 @@ public class HardStopThreadCommand : SpaceBattle.Lib.ICommand
         }
     }
 }
+

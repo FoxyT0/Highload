@@ -22,3 +22,4 @@ public class CreateAndStartThreadCommand : SpaceBattle.Lib.ICommand
         mt.Execute();
     }
 }
+

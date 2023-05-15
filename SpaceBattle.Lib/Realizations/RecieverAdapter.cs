@@ -18,3 +18,4 @@ public class RecieverAdapter : IReciever
         return queue.Count() == 0;
     }
 }
+
