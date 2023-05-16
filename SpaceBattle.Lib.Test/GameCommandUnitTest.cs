@@ -52,7 +52,6 @@ public class GameCommandUnitTest
 		ScopeGame.Setup(o => o.run_strategy(It.IsAny<object[]>())).Returns((object[] args) => ic);
 		var TimeSpanGame = new Mock<IStrategy>();
 		TimeSpanGame.Setup(o => o.run_strategy(It.IsAny<object[]>())).Returns((object[] args) => new TimeSpan(100));
-		var ExHandler = new Mock<IStrategy>();
 
 		IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Sessions.GetReciever", (object[] args) => GetGameReciever.Object.run_strategy(args)).Execute();
 		IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Sessions.Scope", (object[] args) => ScopeGame.Object.run_strategy(args)).Execute();
@@ -66,11 +65,29 @@ public class GameCommandUnitTest
 		var gc = new GameCommand("1");
 		var fcmd = new Mock<SpaceBattle.Lib.ICommand>();
 		fcmd.Setup(o => o.Execute()).Callback(() => waiter.Set()).Verifiable();
-		q1.Enqueue(fcmd.Object);
 
+		q1.Enqueue(fcmd.Object);
 		gc.Execute();
 
 		waiter.WaitOne();
 		fcmd.Verify();
+	}
+
+	[Fact]
+	public void ExceptionTest()
+	{
+		var exh = new Mock<SpaceBattle.Lib.ICommand>();
+		exh.Setup(o => o.Execute()).Verifiable();
+		var ExHandler = new Mock<IStrategy>();
+		ExHandler.Setup(o => o.run_strategy(It.IsAny<object[]>())).Returns((object[] args) => exh.Object);
+		IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Exception.ExceptionHandler", (object[] args) => ExHandler.Object.run_strategy(args)).Execute();
+		var gc = new GameCommand("1");
+		var fcmd = new Mock<SpaceBattle.Lib.ICommand>();
+		fcmd.Setup(o => o.Execute()).Throws(new Exception());
+
+		q1.Enqueue(fcmd.Object);
+		gc.Execute();
+
+		exh.Verify();
 	}
 }
