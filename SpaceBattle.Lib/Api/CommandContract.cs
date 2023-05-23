@@ -13,7 +13,7 @@ public class CommandContract
     [OpenApiProperty(Description = "ID of game")]
     public string game_id { get; set; }
 
-	[DataMember(Name = "game_item_id", Order = 1)]
+	[DataMember(Name = "game_item_id", Order = 3)]
     [OpenApiProperty(Description = "ID of game item")]
     public string game_item_id { get; set; }
 

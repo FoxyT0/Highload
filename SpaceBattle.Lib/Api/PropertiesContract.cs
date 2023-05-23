@@ -7,6 +7,6 @@ public class PropertiesContract
 {
 		[DataMember(Name = "property", Order = 1)]
         [OpenApiProperty(Description = "Property for command contract")]
-        public string property { get; set; }
+        public object property { get; set; }
 }
 

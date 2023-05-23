@@ -14,7 +14,7 @@ public interface IWebApi
     [WebInvoke(Method = "POST", UriTemplate = "/command")]
     [OpenApiTag("Tag")]
     [OpenApiResponse(ContentTypes = new[] { "application/json" }, Description = "Success", StatusCode = HttpStatusCode.OK, Type = typeof(CommandContract)) ]
-    CommandContract BodyQuery(
+    void BodyQuery(
             [OpenApiParameter(ContentTypes = new[] { "application/json" }, Description = "param description.")]
 			CommandContract param
 	);
