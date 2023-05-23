@@ -7,18 +7,18 @@ public class CommandContract
 {
     [DataMember(Name = "type", Order = 1)]
     [OpenApiProperty(Description = "Command type")]
-    public string type { get; set; }
+    public string ?type { get; set; }
 
 	[DataMember(Name = "game_id", Order = 2)]
     [OpenApiProperty(Description = "ID of game")]
-    public string game_id { get; set; }
+    public string ?game_id { get; set; }
 
 	[DataMember(Name = "game_item_id", Order = 3)]
     [OpenApiProperty(Description = "ID of game item")]
-    public string game_item_id { get; set; }
+    public string ?game_item_id { get; set; }
 
 	[DataMember(Name = "properties", Order = 4)]
     [OpenApiProperty(Description = "Properties for item")]
-    public List<PropertiesContract> item_properties { get; set; }
+    public List<PropertiesContract> ?item_properties { get; set; }
 }
 
