@@ -21,3 +21,4 @@ public class CommandContract
     [OpenApiProperty(Description = "Properties for item")]
     public List<PropertiesContract> item_properties { get; set; }
 }
+

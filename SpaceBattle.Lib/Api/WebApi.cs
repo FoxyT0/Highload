@@ -11,3 +11,4 @@ public class WebApi : IWebApi
 		IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Api.SendToGame", obj);
 	}
 }
+
