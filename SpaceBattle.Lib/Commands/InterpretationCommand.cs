@@ -1,6 +1,6 @@
 namespace SpaceBattle.Lib;
 
-using HWdTech;
+using Hwdtech;
 
 public class InterpretationCommand : ICommand
 {
