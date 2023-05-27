@@ -6,7 +6,7 @@ public class PushToQueue : IStrategy
 {
 	public object run_strategy(params object[] args)
 	{
-		int gameId = (int)args[0];
+		string gameId = (string)args[0];
 		ICommand cmd = (ICommand)args[1];
 
 		var queue = IoC.Resolve<Queue<ICommand>>("Game.Get.Queue", gameId);

@@ -7,16 +7,16 @@ public class GetQueue : IStrategy
 {
 	public object run_strategy(params object[] args)
 	{
-		string objId = (string)args[0];
+		string gameId = (string)args[0];
 
-		try
-		{
-			return IoC.Resolve<IDictionary<string, Queue<ICommand>>>("Game.Get.GameDictionary").TryGetValue(objId, out Queue<ICommand>? queue);
-		}
-		catch(KeyNotFoundException)
-		{
-			throw new Exception();
-		}
+		if (!IoC.Resolve<IDictionary<string, Queue<ICommand>>>("Game.Get.GameDictionary").TryGetValue(gameId, out Queue<ICommand>? queue))
+        {
+            throw new Exception();
+        }
+        else
+        {
+            return queue;
+        }
 	}
 }
 

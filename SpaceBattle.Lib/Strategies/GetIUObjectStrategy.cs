@@ -1,4 +1,3 @@
-
 namespace SpaceBattle.Lib;
 
 using Hwdtech;
@@ -9,14 +8,14 @@ public class GetIUObject : IStrategy
 	{
 		string objId = (string)args[0];
 
-		try
-		{
-			return IoC.Resolve<IDictionary<string, IUObject>>("Game.Get.GameDictionary").TryGetValue(objId, out IUObject? queue);
-		}
-		catch(KeyNotFoundException)
-		{
-			throw new Exception();
-		}
+		if (!IoC.Resolve<IDictionary<string, IUObject>>("Game.Get.UObjectsDictionary").TryGetValue(objId, out IUObject? obj))
+        {
+            throw new Exception();
+        }
+        else
+        {
+            return obj;
+        }
 	}
 }
 
