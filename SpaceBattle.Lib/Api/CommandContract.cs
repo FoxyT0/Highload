@@ -19,6 +19,6 @@ public class CommandContract
 
 	[DataMember(Name = "properties", Order = 4)]
     [OpenApiProperty(Description = "Properties for item")]
-    public List<PropertiesContract> ?item_properties { get; set; }
+    public Dictionary<string, object> ?item_properties { get; set; }
 }
 
