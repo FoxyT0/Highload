@@ -22,9 +22,9 @@ public class TestInterpretCommand
     public void GoodPushToQueue()
     {
         Dictionary<string, Queue<SpaceBattle.Lib.ICommand>> DictGames = new Dictionary<string, Queue<SpaceBattle.Lib.ICommand>>();
-        Dictionary<string, IUObject> DictObj = new Dictionary<string, IUObject>();
-
         IoC.Resolve<ICommand>("IoC.Register", "Game.Get.GameDictionary", (object[] args) => DictGames).Execute();
+
+        Dictionary<string, IUObject> DictObj = new Dictionary<string, IUObject>();
         IoC.Resolve<ICommand>("IoC.Register", "Game.Get.UObjectsDictionary", (object[] args) => DictObj).Execute();
 
         Mock<SpaceBattle.Lib.ICommand> mockCommand = new Mock<SpaceBattle.Lib.ICommand>();
@@ -54,9 +54,9 @@ public class TestInterpretCommand
     public void GetExceptionFromGameId()
     {
         Dictionary<string, Queue<SpaceBattle.Lib.ICommand>> DictGames = new Dictionary<string, Queue<SpaceBattle.Lib.ICommand>>();
-        Dictionary<string, IUObject> DictObj = new Dictionary<string, IUObject>();
-
         IoC.Resolve<ICommand>("IoC.Register", "Game.Get.GameDictionary", (object[] args) => DictGames).Execute();
+
+        Dictionary<string, IUObject> DictObj = new Dictionary<string, IUObject>();
         IoC.Resolve<ICommand>("IoC.Register", "Game.Get.UObjectsDictionary", (object[] args) => DictObj).Execute();
 
         Mock<SpaceBattle.Lib.ICommand> mockCommand = new Mock<SpaceBattle.Lib.ICommand>();
@@ -69,7 +69,7 @@ public class TestInterpretCommand
         DictObj.Add("548", mockUObject.Object);
 
         Mock<IMessage> mockMessage = new Mock<IMessage>();
-        mockMessage.SetupGet(x => x.gameId).Returns("qwerty");
+        mockMessage.SetupGet(x => x.gameId).Returns("qwerty"); // Get bad Game id
         mockMessage.SetupGet(x => x.cmd).Returns("Fire");
         mockMessage.SetupGet(x => x.properties).Returns(new Dictionary<string, object> { { "Damage", 10 } });
         mockMessage.SetupGet(x => x.objId).Returns("548");
@@ -84,9 +84,9 @@ public class TestInterpretCommand
     public void GetExceptionFromIUObjectId()
     {
         Dictionary<string, Queue<SpaceBattle.Lib.ICommand>> DictGames = new Dictionary<string, Queue<SpaceBattle.Lib.ICommand>>();
-        Dictionary<string, IUObject> DictObj = new Dictionary<string, IUObject>();
+        IoC.Resolve<ICommand>("IoC.Register", "Game.Get.GameDictionary", (object[] args) => DictGames).Execute();
 
-        IoC.Resolve<ICommand>("IoC.Register", "Server.Get.GamesDictionary", (object[] args) => DictGames).Execute();
+        Dictionary<string, IUObject> DictObj = new Dictionary<string, IUObject>();
         IoC.Resolve<ICommand>("IoC.Register", "Game.Get.UObjectsDictionary", (object[] args) => DictObj).Execute();
 
         Mock<SpaceBattle.Lib.ICommand> mockCommand = new Mock<SpaceBattle.Lib.ICommand>();
@@ -102,7 +102,7 @@ public class TestInterpretCommand
         mockMessage.SetupGet(x => x.gameId).Returns("asdfg");
         mockMessage.SetupGet(x => x.cmd).Returns("Fire");
         mockMessage.SetupGet(x => x.properties).Returns(new Dictionary<string, object> { { "Damage", 10 } });
-        mockMessage.SetupGet(x => x.objId).Returns("777");
+        mockMessage.SetupGet(x => x.objId).Returns("777");  //Get bad Object id
 
         IoC.Resolve<ICommand>("IoC.Register", "Game.Get.FireCommand", (object[] args) => mockCommand.Object).Execute();
 
@@ -114,9 +114,9 @@ public class TestInterpretCommand
     public void GetExceptionFromBadProperties()
     {
         Dictionary<string, Queue<SpaceBattle.Lib.ICommand>> DictGames = new Dictionary<string, Queue<SpaceBattle.Lib.ICommand>>();
-        Dictionary<string, IUObject> DictObj = new Dictionary<string, IUObject>();
+        IoC.Resolve<ICommand>("IoC.Register", "Game.Get.GameDictionary", (object[] args) => DictGames).Execute();
 
-        IoC.Resolve<ICommand>("IoC.Register", "Server.Get.GamesDictionary", (object[] args) => DictGames).Execute();
+        Dictionary<string, IUObject> DictObj = new Dictionary<string, IUObject>();
         IoC.Resolve<ICommand>("IoC.Register", "Game.Get.UObjectsDictionary", (object[] args) => DictObj).Execute();
 
         Mock<SpaceBattle.Lib.ICommand> mockCommand = new Mock<SpaceBattle.Lib.ICommand>();
