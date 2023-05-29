@@ -17,7 +17,6 @@ public class CreateScopeAndGameStrategy : IStrategy
 		IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", gameScope).Execute();
 		IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Scope.Register.Dependencies", (object[] args) => new RegisterDependenciesStrategy().run_strategy(args)).Execute();
 		IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Scope.Create.Game", (object[] args) => new CreateGameCommandStrategy().run_strategy(args)).Execute();
-		IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Session.Delete", (object[] args) => new DeleteGameStrategy().run_strategy(args)).Execute();
 		
 		IoC.Resolve<ICommand>("Scope.Register.Dependencies", gameScope).Execute();
 		var gameCommand = IoC.Resolve<Mock<ICommand>>("Scope.Create.Game", gameScope);
