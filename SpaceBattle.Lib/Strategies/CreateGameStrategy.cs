@@ -1,7 +1,6 @@
 namespace SpaceBattle.Lib;
 
 using Hwdtech;
-using Moq;
 
 public class CreateScopeAndGameStrategy : IStrategy
 {
@@ -19,7 +18,7 @@ public class CreateScopeAndGameStrategy : IStrategy
 		IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Scope.Create.Game", (object[] args) => new CreateGameCommandStrategy().run_strategy(args)).Execute();
 		
 		IoC.Resolve<ICommand>("Scope.Register.Dependencies", gameScope).Execute();
-		var gameCommand = IoC.Resolve<Mock<ICommand>>("Scope.Create.Game", gameScope);
+		var gameCommand = IoC.Resolve<SpaceBattle.Lib.ICommand>("Scope.Create.Game", gameScope);
 
 		return gameCommand;
 	}
