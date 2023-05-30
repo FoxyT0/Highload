@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HWdTech.Common" Version="1.0.1.39029" />
     <PackageReference Include="Hwdtech.Core" Version="1.0.0" />
     <PackageReference Include="Hwdtech.IoC" Version="1.0.0" />
     <PackageReference Include="Hwdtech.Ioc.ScopeBasedIoCImplementation" Version="1.0.0" />
