@@ -10,7 +10,7 @@ public class CreateGameCommandStrategy : IStrategy
 		object currScope = (object)args[0];
 
 		IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", currScope).Execute(); 
-		return new Mock<ICommand>();
+		return new Mock<ICommand>().Object;
 	}
 }
 
