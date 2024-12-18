@@ -1,5 +1,4 @@
 namespace SpaceBattle.Lib;
-
 public class SagaCommand : ICommand {
 	private IList<Tuple<ICommand, ICommand>> comp;
 	private ICommand pivot;
@@ -38,3 +37,5 @@ public class SagaCommand : ICommand {
 		}
 	}
 }
+
+
