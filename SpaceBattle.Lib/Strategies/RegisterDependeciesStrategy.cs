@@ -12,11 +12,10 @@ public class RegisterDependenciesStrategy : IStrategy
 		IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", currScope).Execute();
 		
 		return new ActionCommand(()=> {
-				Dictionary<string, IUObject> ships = new Dictionary<string, IUObject>() {};
-				Queue<SpaceBattle.Lib.ICommand> queue = new Queue<SpaceBattle.Lib.ICommand>();
+				Dictionary<string, IUObject> ships = new Dictionary<string, IUObject>() {{"Object1", new Mock<IUObject>().Object}};				Queue<SpaceBattle.Lib.ICommand> queue = new Queue<SpaceBattle.Lib.ICommand>();
 				var TimeSpanGame = new Mock<IStrategy>();
 				TimeSpanGame.Setup(o => o.run_strategy(It.IsAny<object[]>())).Returns((object[] args) => new TimeSpan(100));
-				IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Get.TimeSpan", (object[] args) => TimeSpanGame.Object.run_strategy(args)).Execute();
+				IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Sessions.TimeSpan", (object[] args) => TimeSpanGame.Object.run_strategy(args)).Execute();
 				var GetObjcet = new Mock<IStrategy>();
 				GetObjcet.Setup(o => o.run_strategy(It.IsAny<object[]>())).Returns((object[] args) => ships[(string)args[0]]);
 				IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Get.Object", (object[] args) => GetObjcet.Object.run_strategy(args)).Execute();		

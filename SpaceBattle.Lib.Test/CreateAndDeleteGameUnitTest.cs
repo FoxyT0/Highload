@@ -52,7 +52,7 @@ public class CreateAndDeleteGameUnitTest
 	{
 		var gameCommand = IoC.Resolve<SpaceBattle.Lib.ICommand>("Game.Create.New", "Game1", "Scope1");
 
-		var ts = IoC.Resolve<TimeSpan>("Game.Get.TimeSpan");
+		var ts = IoC.Resolve<TimeSpan>("Game.Sessions.TimeSpan");
 		Assert.True(ts == new TimeSpan(100));
 	}
 
