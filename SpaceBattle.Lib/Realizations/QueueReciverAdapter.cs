@@ -6,7 +6,7 @@ public class QueueRecieverAdapter : IReciever
 
     public QueueRecieverAdapter(Queue<ICommand> queue) {
         this.queue = queue;
-    };
+    }
 
     public ICommand Recieve()
     {

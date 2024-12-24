@@ -6,22 +6,25 @@ public class ThreadManager
 {
 	private Dictionary<string, ISender> threadSenders = new Dictionary<string, ISender>();
 
-	public ThreadManager(int threadsCount, int gameCount)
-	{
-		int threadsCount = threadsCount;
-        int gameCount = gameCount;
+    private int threads;
+    private int games;    
 
-		for(int i = 0; i < threadsCount; i++) {
+	public ThreadManager(int threads, int games)
+	{
+		this.threads = threads;
+        this.games = games;
+
+		for(int i = 0; i < threads; i++) {
 			String ThreadId = i.ToString();
 			Action start = () =>
 			{
-				ISender gameSender = IoC.Resolve<ISender>("Game.Threads.GetInnerSender", id);
-				for(int j = 1; j <= gameNum; j++) {
-                    string gameId = j.toString(); 
-                    object gameScope = IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))
+				ISender gameSender = IoC.Resolve<ISender>("Game.Threads.GetInnerSender", ThreadId);
+				for(int j = 1; j <= games; j++) {
+                    string gameId = j.ToString(); 
+                    object gameScope = IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"));
 					IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", gameScope).Execute();
 
-					String gtid = ThreadId + "." + gameId;			
+					String tgid = ThreadId + "." + gameId;			
 					ICommand gcmd = IoC.Resolve<ICommand>("Game.Session.Create", tgid, tgid);
 					gameSender.Send(gcmd);
 				};

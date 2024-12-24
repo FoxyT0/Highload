@@ -23,7 +23,7 @@ public class Program
 		{
 			options.AllowSynchronousIO = true;
 		});
-		ThreadManager tm = new ThreadManager();
+		ThreadManager tm = new ThreadManager(4, 5);
 		builder.Services.AddSingleton<ThreadManager>(tm);
         builder.Services.AddRazorPages();
 		builder.Services.AddControllers();

@@ -16,32 +16,32 @@ public class RegisterThreadDependenciesStrategy : IStrategy
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.SetThread", (object[] args) => 
             new ActionCommand(() => {
                 threads.GetOrAdd((string)args[0], new ThreadCollection())
-                ;threads[(string)args[0]].tr = (MyThread)args[1]
+                ;threads[(string)args[0]].tread = (MyThread)args[1]
                 ;})).Execute();
 
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.SetInnerReciever", (object[] args) => 
             new ActionCommand(() => {
                 threads.GetOrAdd((string)args[0], new ThreadCollection());
-                threads[(string)args[0]].irc = new RecieverAdapter((BlockingCollection<ICommand>)args[1]);
+                threads[(string)args[0]].innerReciever = new RecieverAdapter((BlockingCollection<ICommand>)args[1]);
                 })).Execute();
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.SetInnerSender", (object[] args) =>
             new ActionCommand(() => {
                 threads.GetOrAdd((string)args[0], new ThreadCollection())
-                ;threads[(string)args[0]].isd = new SenderAdapter((BlockingCollection<ICommand>)args[1]);
+                ;threads[(string)args[0]].innerSender = new SenderAdapter((BlockingCollection<ICommand>)args[1]);
                 })).Execute();
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.SetOuterReciever", (object[] args) =>
              new ActionCommand(() => {
                 threads.GetOrAdd((string)args[0], new ThreadCollection())
-                ;threads[(string)args[0]].orc =  new RecieverAdapter((BlockingCollection<ICommand>)args[1]);
+                ;threads[(string)args[0]].outerReciever =  new RecieverAdapter((BlockingCollection<ICommand>)args[1]);
                 })).Execute();
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.SetOuterSender", (object[] args) =>
              new ActionCommand(() => {
                 threads.GetOrAdd((string)args[0], new ThreadCollection());
-                threads[(string)args[0]].osd = new SenderAdapter((BlockingCollection<ICommand>)args[1]);
+                threads[(string)args[0]].outerSender = new SenderAdapter((BlockingCollection<ICommand>)args[1]);
                 })).Execute();
 
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.GetThread", (object[] args) =>
-            threads[(string)args[0]].tr).Execute();
+            threads[(string)args[0]].tread).Execute();
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.GetInnerReciever", (object[] args) => 
             threads[(string)args[0]].innerReciever).Execute();
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.GetInnerSender", (object[] args) => 
@@ -66,9 +66,10 @@ public class RegisterThreadDependenciesStrategy : IStrategy
 			IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Session.Create", (object[] args) =>
              new GameCreatorStrategy().run_strategy(args)).Execute();
 			IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Scope.Register.Dependencies", (object[] args) =>
-             new RegisterDependeciesStrategy().run_strategy(args)).Execute();
+             new RegisterDependenciesStrategy().run_strategy(args)).Execute();
 			IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Commands.Deserialize", (object[] args) =>
-             new ActionCommand(() => {});).Execute();
+             new ActionCommand(() => {})).Execute();
 		});
 	}
 }
+
