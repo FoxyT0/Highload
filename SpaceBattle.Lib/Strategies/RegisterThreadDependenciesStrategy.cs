@@ -3,7 +3,7 @@ namespace SpaceBattle.Lib;
 using Hwdtech;
 using System.Collections.Concurrent;
 
-public class RegisterThreadDepsStrategy : IStrategy
+public class RegisterThreadDependenciesStrategy : IStrategy
 {
 	public object run_strategy(params object[] args)
 	{
