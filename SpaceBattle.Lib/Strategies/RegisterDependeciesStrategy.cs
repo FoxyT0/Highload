@@ -12,7 +12,7 @@ public class RegisterDependenciesStrategy : IStrategy
 		IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", currScope).Execute();
 		
 		return new ActionCommand(()=> {
-				Dictionary<string, IUObject> ships = new Dictionary<string, IUObject>() {{"Object1", new Mock<IUObject>().Object}};
+				Dictionary<string, IUObject> ships = new Dictionary<string, IUObject>() {};
 				Queue<SpaceBattle.Lib.ICommand> queue = new Queue<SpaceBattle.Lib.ICommand>();
 				var TimeSpanGame = new Mock<IStrategy>();
 				TimeSpanGame.Setup(o => o.run_strategy(It.IsAny<object[]>())).Returns((object[] args) => new TimeSpan(100));
@@ -35,6 +35,7 @@ public class RegisterDependenciesStrategy : IStrategy
 				var GetQueue = new Mock<IStrategy>();
 				GetQueue.Setup(o => o.run_strategy(It.IsAny<object[]>())).Returns((object[] args) => queue);
 				IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Get.Queue", (object[] args) => GetQueue.Object.run_strategy(args)).Execute();	
+				IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Sessions.GetReciever", (object[] args) => new QueueRecieverAdapter(queue)).Execute();
 				});
 	}
 }
