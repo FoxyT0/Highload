@@ -15,7 +15,7 @@ public class SendCommandCommand : SpaceBattle.Lib.ICommand
 
     public void Execute()
     {
-        var sn = IoC.Resolve<ISender>("Game.Threads.GetSender", id);
+        var sn = IoC.Resolve<ISender>("Game.Threads.GetInnerSender", id);
         sn.Send(cmd);
     }
 }
