@@ -21,9 +21,10 @@ public class SpaceBattleController : ControllerBase
 		string[] parts = tgid.Split('.');
 		ISender sender = threadManager.GetSender(parts[0].Trim());
 		String rawJson = new StreamReader(Request.Body).ReadToEnd();
-		ICommand cmd = new SendMsgToGameCommand(rawJson, parts[1].Trim());
+		ICommand cmd = new SendMsgToGameCommand(rawJson, tgid);
 		sender.Send(cmd);
 
 		return Ok();
 	}
 }
+

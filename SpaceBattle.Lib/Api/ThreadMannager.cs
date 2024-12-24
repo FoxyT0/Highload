@@ -21,7 +21,7 @@ public class ThreadManager
                     object gameScope = IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))
 					IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", gameScope).Execute();
 
-					String gtid = ThreadId + gameId;			
+					String gtid = ThreadId + "." + gameId;			
 					ICommand gcmd = IoC.Resolve<ICommand>("Game.Session.Create", tgid, tgid);
 					gameSender.Send(gcmd);
 				};
@@ -37,4 +37,5 @@ public class ThreadManager
 		return threadSenders[ThreadId];
 	}
 }
+
 
